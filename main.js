@@ -55,11 +55,12 @@ function init() {
   renderRow();
   console.log(createQuest(rows));
   console.log(createAnsRow(rows));
+  checkNotChoseCol();
   renderNumber();
   renderSumNumber();
 
   createArrChose();
-  checkNotChoseCol();
+
   time();
   choseAns();
   removeCol();
