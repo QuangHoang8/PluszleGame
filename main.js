@@ -7,8 +7,10 @@ const in_game = document.querySelector("#in-game");
 const end_game = document.querySelector("#end-game");
 const level = document.querySelectorAll(".level-ribbon");
 const hour_end = document.querySelector(".hour-end");
-const minute_end = document.querySelector(".minute-end");
-const second_end = document.querySelector(".second-end");
+const minute1_end = document.querySelector(".minute1-end");
+const second1_end = document.querySelector(".second1-end");
+const minute2_end = document.querySelector(".minute2-end");
+const second2_end = document.querySelector(".second2-end");
 const count_undo_end = document.querySelector("#count-undo");
 const count_plus = document.querySelector(".count-plus");
 const count_plusAll = document.querySelector(".count-plusAll");
@@ -382,8 +384,10 @@ function choseAns() {
             time * 100 + 1000
           );
           hour_end.innerText = h;
-          minute_end.innerText = m;
-          second_end.innerText = s;
+          minute2_end.innerText = m2;
+          minute1_end.innerText = m1;
+          second1_end.innerText = s1;
+          second2_end.innerText = s2;
           count_undo_end.innerText = undo;
           count_plus.innerText = countChose;
           count_plusAll.innerText = countAll;
@@ -419,34 +423,55 @@ function removeRow() {
 }
 
 // Tạo đồng hồ đếm thời gian
-const minute = document.querySelector(".minute");
-const second = document.querySelector(".second");
+const minute1 = document.querySelector(".minute1");
+const second1 = document.querySelector(".second1");
+const minute2 = document.querySelector(".minute2");
+const second2 = document.querySelector(".second2");
 const hour = document.querySelector(".hour");
 // Biến giây
-let s = 0;
+let s1 = 0;
+let s2 = 0;
 // Biến phút
-let m = 0;
+let m1 = 0;
+let m2 = 0;
 // Biến giờ
 let h = 0;
 let timeout = null;
 function time() {
   timeout = setInterval(() => {
-    s = parseInt(second.innerText);
-    s++;
-    second.innerText = s;
-    if (s == 60) {
-      m = parseInt(minute.innerText);
-      m++;
-      minute.innerText = m;
-      second.innerText = 0;
+    s2 = parseInt(second2.innerText);
+    s2++;
+    second2.innerText = s2;
+    if (s2 == 10) {
+      s1 = parseInt(second1.innerText);
+      s1++;
+      second1.innerText = s1;
+      second2.innerText = 0;
+      s2 = 0;
     }
-    if (m == 60) {
+    if (s1 == 6) {
+      m2 = parseInt(minute2.innerText);
+      m2++;
+      minute2.innerText = m2;
+      second1.innerText = 0;
+      // second2.innerText = 0;
+      s1 = 0;
+    }
+    if (m2 == 10) {
+      m1 = parseInt(minute1.innerText);
+      m1++;
+      minute1.innerText = m1;
+      minute2.innerText = 0;
+      m2 = 0;
+    }
+    if (m1 == 6) {
       h = parseInt(hour.innerText);
       h++;
       hour.innerText = h;
-      minute.innerText = 0;
-      second.innerText = 0;
-      m = 0;
+      minute1.innerText = 0;
+      m1 = 0;
+      // second.innerText = 0;
+      // m = 0;
     }
   }, 1000);
 }
@@ -535,8 +560,10 @@ exit.addEventListener("click", function () {
   for (let i = 0; i < row.length; i++) {
     row[i].parentNode.removeChild(row[i]);
   }
-  minute.innerText = "0";
-  second.innerText = "0";
+  minute1.innerText = "0";
+  minute2.innerText = "0";
+  second2.innerText = "0";
+  second1.innerText = "0";
   hour.innerText = "0";
   count_undo.innerText = "0";
   countAll = 0;
@@ -560,8 +587,10 @@ restart.addEventListener("click", function () {
   for (let i = 0; i < row.length; i++) {
     row[i].parentNode.removeChild(row[i]);
   }
-  minute.innerText = "0";
-  second.innerText = "0";
+  minute1.innerText = "0";
+  minute2.innerText = "0";
+  second2.innerText = "0";
+  second1.innerText = "0";
   hour.innerText = "0";
   count_undo.innerText = "0";
   countAll = 0;

@@ -359,13 +359,13 @@ span {
   color: #f5911f;
 }
 .win-color-number-notChose {
-  color:#fecd66;
+  color: #fecd66;
 }
 .win-background-sum {
- background-color: #f5911f;
+  background-color: #f5911f;
 }
 .win-background-number {
- background-color: #fecd66;
+  background-color: #fecd66;
 }
 .button-support {
   position: absolute;
@@ -472,7 +472,7 @@ span {
   margin-left: 173px;
 }
 .undo-end {
-  margin-left: 85px;
+  margin-left: 43px;
 }
 .block-support.end {
   width: 200px;
