@@ -1,3 +1,5 @@
+import {renderStartGameDisplay} from "./renderStartGameDisplay.js"; 
+
 let book = document.querySelector(".book");
 let angle_top_2 = document.querySelectorAll(".angle-top-2");
 const count_undo = document.querySelector(".count-undo");
@@ -15,40 +17,34 @@ const count_undo_end = document.querySelector("#count-undo");
 const count_plus = document.querySelector(".count-plus");
 const count_plusAll = document.querySelector(".count-plusAll");
 
-// Tạo đường viên cho trang
-function renderCirle() {
-  for (let j = 0; j < angle_top_2.length; j++) {
-    for (let i = 1; i < 60; i++) {
-      const circle = document.createElement("div");
-      circle.classList.add("circle");
-      angle_top_2[j].insertAdjacentElement("afterend", circle);
-    }
-  }
+// Render brack ground cho trang
+function renderStartGame() {
+  renderStartGameDisplay.execute()
 }
-renderCirle();
+renderStartGame();
 
-// Chọn level
-let slideIndex = 1;
-showSlides(slideIndex);
+// // Chọn level
+// let slideIndex = 1;
+// showSlides(slideIndex);
 
-// Next/previous controls
-function plusSlides(n) {
-  showSlides((slideIndex += n));
-}
+// // Next/previous controls
+// function plusSlides(n) {
+//   showSlides((slideIndex += n));
+// }
 
-function showSlides(n) {
-  let slides = document.getElementsByClassName("mySlides");
-  if (n > slides.length) {
-    slideIndex = 1;
-  }
-  if (n < 1) {
-    slideIndex = slides.length;
-  }
-  for (let i = 0; i < slides.length; i++) {
-    slides[i].classList.add("display-none");
-  }
-  slides[slideIndex - 1].classList.remove("display-none");
-}
+// function showSlides(n) {
+//   let slides = document.getElementsByClassName("mySlides");
+//   if (n > slides.length) {
+//     slideIndex = 1;
+//   }
+//   if (n < 1) {
+//     slideIndex = slides.length;
+//   }
+//   for (let i = 0; i < slides.length; i++) {
+//     slides[i].classList.add("display-none");
+//   }
+//   slides[slideIndex - 1].classList.remove("display-none");
+// }
 //  Ra đề bài
 
 // Lấy số dòng theo level
@@ -69,17 +65,17 @@ function init() {
   removeRow();
 }
 
-// Chọn level
-start_game.addEventListener("click", function () {
-  for (let i = 0; i < level.length; i++) {
-    if (!level[i].classList.contains("display-none")) {
-      rows = parseInt(level[i].getAttribute("value"));
-    }
-  }
-  init();
-  begin_game.style.display = "none";
-  in_game.style.display = "block";
-});
+// // Chọn level
+// start_game.addEventListener("click", function () {
+//   for (let i = 0; i < level.length; i++) {
+//     if (!level[i].classList.contains("display-none")) {
+//       rows = parseInt(level[i].getAttribute("value"));
+//     }
+//   }
+//   init();
+//   begin_game.style.display = "none";
+//   in_game.style.display = "block";
+// });
 
 // Tạo khung số
 

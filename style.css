@@ -62,79 +62,19 @@ img {
   background: #7cb7d7;
   margin-top: 3px;
   border-radius: 50%;
-  transform: translateX(-50%);
+  margin-left: -103px;
 }
-.circle1 {
-  width: 10px;
-  height: 10px;
-  position: absolute;
-  top: 70px;
-  left: -90px;
-  background: #e6d5b8;
 
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-}
-.circle2 {
+.circleOnTop {
   width: 10px;
   height: 10px;
   position: absolute;
   top: 70px;
-  left: -77px;
   background: #e6d5b8;
   border-radius: 50%;
   transform: translate(-50%, -50%);
 }
-.circle3 {
-  width: 10px;
-  height: 10px;
-  position: absolute;
-  top: 70px;
-  left: -64px;
-  background: #e6d5b8;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-}
-.circle4 {
-  width: 10px;
-  height: 10px;
-  position: absolute;
-  top: 70px;
-  left: -51px;
-  background: #e6d5b8;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-}
-.circle5 {
-  width: 10px;
-  height: 10px;
-  position: absolute;
-  top: 70px;
-  left: -38px;
-  background: #e6d5b8;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-}
-.circle6 {
-  width: 10px;
-  height: 10px;
-  position: absolute;
-  top: 70px;
-  left: -25px;
-  background: #e6d5b8;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-}
-.circle7 {
-  width: 10px;
-  height: 10px;
-  position: absolute;
-  top: 70px;
-  left: -12px;
-  background: #e6d5b8;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-}
+
 /* Vẽ incon */
 .icon {
   position: absolute;
