@@ -1,9 +1,9 @@
 import { RenderBackground } from "./renderBackground.js";
-import {RenderInGameDisplay} from "./renderInGameDisplay.js"
+import { RenderInGameDisplay } from "./renderInGameDisplay.js";
 
 class RenderStartGameDisplay {
   constructor() {
-    this.slideIndex=1
+    this.slideIndex = 1;
   }
   execute() {
     const body = document.querySelector("body");
@@ -11,15 +11,21 @@ class RenderStartGameDisplay {
     section.setAttribute("id", "begin-game");
     const cross = this.renderCross();
     const ribbon = this.renderRibbon();
-    const level=this.renderLevelGame()
-    const slideButton=this.renderSlideButton()
-    const startButton=this.renderStartButton(level,body,section)
+    const level = this.renderLevelGame();
+    const slideButton = this.renderSlideButton();
+    const startButton = this.renderStartButton(level, body, section);
 
-    const renderBackground = new RenderBackground([cross, ribbon,...level,...slideButton,startButton]);
+    const renderBackground = new RenderBackground([
+      cross,
+      ribbon,
+      ...level,
+      ...slideButton,
+      startButton,
+    ]);
     const background = renderBackground.execute();
     const script = document.querySelector("script");
-    section.append(background)
-    body.insertBefore(section,script);
+    section.append(background);
+    body.insertBefore(section, script);
   }
 
   renderCross() {
@@ -61,86 +67,80 @@ class RenderStartGameDisplay {
       ribbon.classList.add("mySlides");
       ribbon.classList.add(`${item.text.toLowerCase()}`);
       ribbon.setAttribute("value", item.value);
-      if(index!==0){
+      if (index !== 0) {
         ribbon.classList.add("display-none");
       }
 
       const span = document.createElement("span");
       span.classList.add("award-ribbon-text");
-      span.innerText=item.text
+      span.innerText = item.text;
       ribbon.append(span);
 
       return ribbon;
     });
-    return elements
+    return elements;
   }
 
-  renderSlideButton(){
+  renderSlideButton() {
     const prev = document.createElement("a");
-    prev.classList.add("prev")
-    prev.innerHTML="&#10094;"
-    prev.onclick=()=>this.plusSlides(-1)
+    prev.classList.add("prev");
+    prev.innerHTML = "&#10094;";
+    prev.onclick = () => this.plusSlides(-1);
 
     const next = document.createElement("a");
-    next.classList.add("next")
-    next.innerHTML="&#10095;"
-    next.onclick=()=>this.plusSlides(1)
+    next.classList.add("next");
+    next.innerHTML = "&#10095;";
+    next.onclick = () => this.plusSlides(1);
 
-    return [prev,next]
+    return [prev, next];
   }
 
-  renderStartButton(level,body,section){
+  renderStartButton(level, body, section) {
     const button = document.createElement("div");
     button.classList.add("support");
     button.setAttribute("id", "start-game");
 
-    const span=document.createElement("span");
-    span.innerText="Start game"
-    button.append(span)
-    button.onclick=()=>this.startGame(level,body,section)
+    const span = document.createElement("span");
+    span.innerText = "Start game";
+    button.append(span);
+    button.onclick = () => this.startGame(level, body, section);
 
-    return button
+    return button;
   }
 
-
-
-// Next/previous controls
-plusSlides(n) {
-  this.showSlides((this.slideIndex += n));
-}
-
-showSlides(n) {
-  let slides = document.getElementsByClassName("mySlides");
-
-  if (n > slides.length) {
-    this.slideIndex = 1;
+  // Next/previous controls
+  plusSlides(n) {
+    this.showSlides((this.slideIndex += n));
   }
-  if (n < 1) {
-    this.slideIndex = slides.length;
-  }
-  for (let i = 0; i < slides.length; i++) {
-    slides[i].classList.add("display-none");
-  }
-  slides[this.slideIndex - 1].classList.remove("display-none");
-}
 
-startGame(level,body,section){
-  let rows=0;
-    for (let i = 0; i < level.length; i++) {
-    if (!level[i].classList.contains("display-none")) {
-      rows = parseInt(level[i].getAttribute("value"));
+  showSlides(n) {
+    let slides = document.getElementsByClassName("mySlides");
+
+    if (n > slides.length) {
+      this.slideIndex = 1;
     }
-    
+    if (n < 1) {
+      this.slideIndex = slides.length;
+    }
+    for (let i = 0; i < slides.length; i++) {
+      slides[i].classList.add("display-none");
+    }
+    slides[this.slideIndex - 1].classList.remove("display-none");
   }
-  
-  
-  body.removeChild(section)
-  const renderInGameDisplay=new RenderInGameDisplay()
-  renderInGameDisplay.execute()
-  console.log("row: ",rows)
-}
 
+  startGame(level, body, section) {
+    let rows = 0;
+    for (let i = 0; i < level.length; i++) {
+      if (!level[i].classList.contains("display-none")) {
+        rows = parseInt(level[i].getAttribute("value"));
+      }
+    }
 
+    body.removeChild(section);
+    const renderInGameDisplay = new RenderInGameDisplay({ rows });
+    renderInGameDisplay.execute();
+    console.log("row: ", rows);
+  }
 }
 
 export const renderStartGameDisplay = new RenderStartGameDisplay();

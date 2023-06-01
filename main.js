@@ -1,4 +1,4 @@
-import {renderStartGameDisplay} from "./renderStartGameDisplay.js"; 
+import { renderStartGameDisplay } from "./renderStartGameDisplay.js";
 
 let book = document.querySelector(".book");
 let angle_top_2 = document.querySelectorAll(".angle-top-2");
@@ -19,7 +19,7 @@ const count_plusAll = document.querySelector(".count-plusAll");
 
 // Render brack ground cho trang
 function renderStartGame() {
-  renderStartGameDisplay.execute()
+  renderStartGameDisplay.execute();
 }
 renderStartGame();
 
@@ -278,9 +278,8 @@ function renderNumber() {
 function renderSumNumber() {
   for (let i = 0; i < number.length - 1; i++) {
     // Điền dòng
-    number[i][number[i].length - 1].querySelector("span").innerText = sumRow()[
-      i
-    ];
+    number[i][number[i].length - 1].querySelector("span").innerText =
+      sumRow()[i];
     // Điền cột
     number[number.length - 1][i].querySelector("span").innerText = sumCol()[i];
   }
@@ -501,103 +500,103 @@ function checkWin(arrChose, arrAnsRow) {
   }
 }
 
-// Hai nút hỗ trợ người chơi
+// // Hai nút hỗ trợ người chơi
 
-const plus = document.querySelector("#plus");
-const plusAll = document.querySelector("#plusAll");
+// const plus = document.querySelector("#plus");
+// const plusAll = document.querySelector("#plusAll");
 
-// Cộng những ô được chọn
-let countChose = 0;
-plus.addEventListener("mousedown", function () {
-  countChose++;
-  for (let i = 0; i < arrQuest.length; i++) {
-    let sumRow = 0;
-    let sumCol = 0;
-    for (let j = 0; j < arrQuest[i].length; j++) {
-      if (number[i][j].classList.contains("background-chose")) {
-        sumRow += arrQuest[i][j];
-      }
-      if (number[j][i].classList.contains("background-chose")) {
-        sumCol += arrQuest[j][i];
-      }
-    }
-    number[i][number.length - 1].querySelector("span").innerText = sumRow;
-    number[number.length - 1][i].querySelector("span").innerText = sumCol;
-  }
-});
-plus.addEventListener("mouseup", function () {
-  renderSumNumber();
-});
+// // Cộng những ô được chọn
+// let countChose = 0;
+// plus.addEventListener("mousedown", function () {
+//   countChose++;
+//   for (let i = 0; i < arrQuest.length; i++) {
+//     let sumRow = 0;
+//     let sumCol = 0;
+//     for (let j = 0; j < arrQuest[i].length; j++) {
+//       if (number[i][j].classList.contains("background-chose")) {
+//         sumRow += arrQuest[i][j];
+//       }
+//       if (number[j][i].classList.contains("background-chose")) {
+//         sumCol += arrQuest[j][i];
+//       }
+//     }
+//     number[i][number.length - 1].querySelector("span").innerText = sumRow;
+//     number[number.length - 1][i].querySelector("span").innerText = sumCol;
+//   }
+// });
+// plus.addEventListener("mouseup", function () {
+//   renderSumNumber();
+// });
 
 // Cộng tất cả các ô theo hàng và cột
-let countAll = 0;
-plusAll.addEventListener("mousedown", function () {
-  countAll++;
-  for (let i = 0; i < arrQuest.length; i++) {
-    let sumRow = 0;
-    let sumCol = 0;
-    for (let j = 0; j < arrQuest[i].length; j++) {
-      sumRow += arrQuest[i][j];
-      sumCol += arrQuest[j][i];
-    }
-    number[i][number.length - 1].querySelector("span").innerText = sumRow;
-    number[number.length - 1][i].querySelector("span").innerText = sumCol;
-  }
-});
-plusAll.addEventListener("mouseup", function () {
-  renderSumNumber();
-});
+// let countAll = 0;
+// plusAll.addEventListener("mousedown", function () {
+//   countAll++;
+//   for (let i = 0; i < arrQuest.length; i++) {
+//     let sumRow = 0;
+//     let sumCol = 0;
+//     for (let j = 0; j < arrQuest[i].length; j++) {
+//       sumRow += arrQuest[i][j];
+//       sumCol += arrQuest[j][i];
+//     }
+//     number[i][number.length - 1].querySelector("span").innerText = sumRow;
+//     number[number.length - 1][i].querySelector("span").innerText = sumCol;
+//   }
+// });
+// plusAll.addEventListener("mouseup", function () {
+//   renderSumNumber();
+// });
 
 // Code cho nút thoát
-const exit = document.querySelector("#exit");
+// const exit = document.querySelector("#exit");
 
-exit.addEventListener("click", function () {
-  const row = document.querySelectorAll(".row");
-  for (let i = 0; i < row.length; i++) {
-    row[i].parentNode.removeChild(row[i]);
-  }
-  minute1.innerText = "0";
-  minute2.innerText = "0";
-  second2.innerText = "0";
-  second1.innerText = "0";
-  hour.innerText = "0";
-  count_undo.innerText = "0";
-  countAll = 0;
-  countChose = 0;
-  undo = 0;
-  rows = 0;
-  arrAnsRow = [];
-  arrQuest = [];
-  number = [];
-  console.log(number);
-  arrChose = [];
-  end_game.style.display = "none";
-  begin_game.style.display = "block";
-});
+// exit.addEventListener("click", function () {
+//   const row = document.querySelectorAll(".row");
+//   for (let i = 0; i < row.length; i++) {
+//     row[i].parentNode.removeChild(row[i]);
+//   }
+//   minute1.innerText = "0";
+//   minute2.innerText = "0";
+//   second2.innerText = "0";
+//   second1.innerText = "0";
+//   hour.innerText = "0";
+//   count_undo.innerText = "0";
+//   countAll = 0;
+//   countChose = 0;
+//   undo = 0;
+//   rows = 0;
+//   arrAnsRow = [];
+//   arrQuest = [];
+//   number = [];
+//   console.log(number);
+//   arrChose = [];
+//   end_game.style.display = "none";
+//   begin_game.style.display = "block";
+// });
 
 // Code cho nút chơi lại
-const restart = document.querySelector("#restart");
+// const restart = document.querySelector("#restart");
 
-restart.addEventListener("click", function () {
-  const row = document.querySelectorAll(".row");
-  for (let i = 0; i < row.length; i++) {
-    row[i].parentNode.removeChild(row[i]);
-  }
-  minute1.innerText = "0";
-  minute2.innerText = "0";
-  second2.innerText = "0";
-  second1.innerText = "0";
-  hour.innerText = "0";
-  count_undo.innerText = "0";
-  countAll = 0;
-  countChose = 0;
-  undo = 0;
-  arrAnsRow = [];
-  arrQuest = [];
-  number = [];
-  console.log(number);
-  arrChose = [];
-  end_game.style.display = "none";
-  in_game.style.display = "block";
-  init();
-});
+// restart.addEventListener("click", function () {
+//   const row = document.querySelectorAll(".row");
+//   for (let i = 0; i < row.length; i++) {
+//     row[i].parentNode.removeChild(row[i]);
+//   }
+//   minute1.innerText = "0";
+//   minute2.innerText = "0";
+//   second2.innerText = "0";
+//   second1.innerText = "0";
+//   hour.innerText = "0";
+//   count_undo.innerText = "0";
+//   countAll = 0;
+//   countChose = 0;
+//   undo = 0;
+//   arrAnsRow = [];
+//   arrQuest = [];
+//   number = [];
+//   console.log(number);
+//   arrChose = [];
+//   end_game.style.display = "none";
+//   in_game.style.display = "block";
+//   init();
+// });
