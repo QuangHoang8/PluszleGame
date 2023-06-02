@@ -1,10 +1,11 @@
-import { RenderBackground } from "./renderBackground.js";
+import { RenderBackground } from "../01.common/renderBackground.js";
 import {
   getRandomNumber,
   getRandomElementOfArray,
   getOneNumberForEachRow,
-} from "./common.js";
-import {RenderEndGameDisplay} from './renderEndGameDisplay.js'
+  getTimeMinuteSencond,
+} from "../01.common/common.js";
+import { RenderEndGameDisplay } from "../04.end-game/renderEndGameDisplay.js";
 export class RenderInGameDisplay {
   constructor({ rows }) {
     this.rows = rows;
@@ -16,22 +17,21 @@ export class RenderInGameDisplay {
     this.spanNumbers = [];
     this.spanNumberHasTotalDivs = [];
     this.spanTotalDivs = [];
-    this.numberOfUndo=0
-    this.numberOfClickPlus=0
-    this.numberOfClickPlusAll=0
-    this.undoCountDiv={}
-    this.numberOfSecond=0
-    this.timeDiv=[]
-    this.intervalId=0
-    this.body={}
-    this.section={}
-
+    this.numberOfUndo = 0;
+    this.numberOfClickPlus = 0;
+    this.numberOfClickPlusAll = 0;
+    this.undoCountDiv = {};
+    this.numberOfSecond = 0;
+    this.timeDiv = [];
+    this.intervalId = 0;
+    this.body = {};
+    this.section = {};
   }
   execute() {
     const body = document.querySelector("body");
-    this.body=body
+    this.body = body;
     const section = document.createElement("section");
-    this.section=section
+    this.section = section;
     section.setAttribute("id", "in-game");
     const table = this.renderTable();
     const clockAndUndoSymbol = this.renderClockAndUndoSymbol();
@@ -50,12 +50,12 @@ export class RenderInGameDisplay {
     const script = document.querySelector("script");
     body.insertBefore(section, script);
     const questNumbers = this.createNumberForQuest();
-    this.questNumbers=questNumbers
+    this.questNumbers = questNumbers;
 
     this.answerNumbers = this.creatNumberForAnswers([...questNumbers]);
     console.log("answerNumbers: ", this.answerNumbers);
     this.renderRow([...questNumbers]);
-    this.countTime()
+    this.countTime();
   }
 
   renderTable() {
@@ -76,17 +76,16 @@ export class RenderInGameDisplay {
     return parentDiv;
   }
 
-  countTime(){   
-    this.intervalId=setInterval(()=>{
-      this.numberOfSecond+=1;
-      const time=Math.floor(this.numberOfSecond/3600)
-      const minute=Math.floor((this.numberOfSecond-time*3600)/60)
-      const second=this.numberOfSecond-time*3600-minute*60
-      this.timeDiv[0].innerText=time
-      this.timeDiv[1].innerText=minute.toString().padStart(2,'0')
-      this.timeDiv[2].innerText=second.toString().padStart(2,'0')
-    },1000)
-    console.log("this.intervalId: ",this.intervalId)
+  countTime() {
+    this.intervalId = setInterval(() => {
+      this.numberOfSecond += 1;
+      const { time, minute, second } = getTimeMinuteSencond(
+        this.numberOfSecond
+      );
+      this.timeDiv[0].innerText = time;
+      this.timeDiv[1].innerText = minute.toString().padStart(2, "0");
+      this.timeDiv[2].innerText = second.toString().padStart(2, "0");
+    }, 1000);
   }
 
   renderClock() {
@@ -128,7 +127,7 @@ export class RenderInGameDisplay {
     countTimeDiv.append(colonDiv2);
     countTimeDiv.append(secondDiv);
 
-    this.timeDiv.push(...[hourDiv,minuteDiv,secondDiv])
+    this.timeDiv.push(...[hourDiv, minuteDiv, secondDiv]);
 
     timeDiv.append(countTimeDiv);
     return timeDiv;
@@ -149,8 +148,8 @@ export class RenderInGameDisplay {
 
     const undoCount = document.createElement("div");
     undoCount.classList.add("count-undo");
-    undoCount.innerText=this.numberOfUndo
-    this.undoCountDiv=undoCount
+    undoCount.innerText = this.numberOfUndo;
+    this.undoCountDiv = undoCount;
 
     undoDiv.append(undoImgDiv);
     undoDiv.append(undoCount);
@@ -165,8 +164,8 @@ export class RenderInGameDisplay {
     const supportTotalChosenDiv = document.createElement("div");
     supportTotalChosenDiv.classList.add("support");
     supportTotalChosenDiv.setAttribute("id", "plus");
-    supportTotalChosenDiv.onmousedown=()=>this.handlePlusChosenMouseDown()
-    supportTotalChosenDiv.onmouseup=()=>this.handleMouseUp()
+    supportTotalChosenDiv.onmousedown = () => this.handlePlusChosenMouseDown();
+    supportTotalChosenDiv.onmouseup = () => this.handleMouseUp();
 
     const supportTotalChosenImgDiv = document.createElement("img");
     supportTotalChosenImgDiv.classList.add("block-support");
@@ -178,9 +177,8 @@ export class RenderInGameDisplay {
     const supportTotalDiv = document.createElement("div");
     supportTotalDiv.classList.add("support");
     supportTotalDiv.setAttribute("id", "plusAll");
-    supportTotalDiv.onmousedown=()=>this.handlePlusAllMouseDown()
-    supportTotalDiv.onmouseup=()=>this.handleMouseUp()
-
+    supportTotalDiv.onmousedown = () => this.handlePlusAllMouseDown();
+    supportTotalDiv.onmouseup = () => this.handleMouseUp();
 
     const supportTotalImgDiv = document.createElement("img");
     supportTotalImgDiv.classList.add("block-support");
@@ -194,27 +192,27 @@ export class RenderInGameDisplay {
     return supportDiv;
   }
 
-  handlePlusChosenMouseDown(){
-    this.numberOfClickPlus+=1
+  handlePlusChosenMouseDown() {
+    this.numberOfClickPlus += 1;
     const totalColums = this.getTotalOfChosenNumberColumns();
     const totalRows = this.getTotalOfChosenNumberRows();
-    this.fillNumberForTotalDiv(totalColums,totalRows)
+    this.fillNumberForTotalDiv(totalColums, totalRows);
   }
 
   getTotalOfChosenNumberColumns() {
-    return this.getTotalOfNumbers("y",false,true);
+    return this.getTotalOfNumbers("y", false, true);
   }
 
   getTotalOfChosenNumberRows() {
-    return this.getTotalOfNumbers("x",false,true);
+    return this.getTotalOfNumbers("x", false, true);
   }
 
-  handlePlusAllMouseDown(){
-    this.numberOfClickPlusAll+=1
+  handlePlusAllMouseDown() {
+    this.numberOfClickPlusAll += 1;
     const totalColums = this.getTotalOfNumberColumns();
     const totalRows = this.getTotalOfNumberRows();
 
-    this.fillNumberForTotalDiv(totalColums,totalRows)
+    this.fillNumberForTotalDiv(totalColums, totalRows);
   }
 
   getTotalOfNumberColumns() {
@@ -225,21 +223,20 @@ export class RenderInGameDisplay {
     return this.getTotalOfNumbers("x");
   }
 
-  handleMouseUp(){
+  handleMouseUp() {
     const totalColums = this.getTotalOfNumberColumnAnswers();
     const totalRows = this.getTotalOfNumberRowAnswers();
-    this.fillNumberForTotalDiv(totalColums,totalRows)
-   
+    this.fillNumberForTotalDiv(totalColums, totalRows);
   }
 
-  fillNumberForTotalDiv(totalColums,totalRows){
-    this.spanTotalDivs.forEach((item,index)=>{
-      if(index<this.rows){
-        item.innerText=totalRows[index]
+  fillNumberForTotalDiv(totalColums, totalRows) {
+    this.spanTotalDivs.forEach((item, index) => {
+      if (index < this.rows) {
+        item.innerText = totalRows[index];
       } else {
-        item.innerText=totalColums[index-this.rows]
-      }      
-    })
+        item.innerText = totalColums[index - this.rows];
+      }
+    });
   }
 
   renderSlideButton() {
@@ -257,7 +254,6 @@ export class RenderInGameDisplay {
   }
 
   renderRow(questNumbers) {
-    console.log("questNumbers2: ", questNumbers);
     const table_number = document.querySelector(".table-number");
     const width = this.getWidthForNumberSpan();
     const fontSize = this.getFontSizeForNumberSpan();
@@ -279,7 +275,14 @@ export class RenderInGameDisplay {
         row1.append(div_number);
       }
 
-      const div_sum = this.createNumberDiv(fontSize, totalRows[i], width, true,false,i);
+      const div_sum = this.createNumberDiv(
+        fontSize,
+        totalRows[i],
+        width,
+        true,
+        false,
+        i
+      );
       row1.appendChild(div_sum);
       table_number.append(row1);
     }
@@ -290,7 +293,9 @@ export class RenderInGameDisplay {
         fontSize,
         totalColums[i],
         width,
-        false,true,i
+        false,
+        true,
+        i
       );
       row2.appendChild(div_sum);
     }
@@ -304,7 +309,6 @@ export class RenderInGameDisplay {
         questNumbers.push({ x: i, y: j, value: getRandomNumber(1, 10) });
       }
     }
-    console.log("questNumbers1: ", questNumbers);
     return questNumbers;
   }
 
@@ -326,16 +330,19 @@ export class RenderInGameDisplay {
   }
 
   getTotalOfNumberColumnAnswers() {
-    return this.getTotalOfNumbers("y",true);
+    return this.getTotalOfNumbers("y", true);
   }
 
   getTotalOfNumberRowAnswers() {
-    return this.getTotalOfNumbers("x",true);
+    return this.getTotalOfNumbers("x", true);
   }
 
-  getTotalOfNumbers(field,isAnswer,isChosen) {
-    const dataSource=!!isAnswer?this.answerNumbers:!!isChosen?this.chosenNumbers:this.questNumbers
-    console.log("dataSource: ",dataSource)
+  getTotalOfNumbers(field, isAnswer, isChosen) {
+    const dataSource = !!isAnswer
+      ? this.answerNumbers
+      : !!isChosen
+      ? this.chosenNumbers
+      : this.questNumbers;
     const totalOfNumbers = [];
     for (let i = 0; i < this.rows; i++) {
       const numbers = dataSource.filter((item) => item[field] === i);
@@ -344,7 +351,6 @@ export class RenderInGameDisplay {
       }, 0);
       totalOfNumbers.push(total);
     }
-    console.log(`totalOfNumbers ${field}: `, totalOfNumbers);
     return totalOfNumbers;
   }
 
@@ -387,29 +393,29 @@ export class RenderInGameDisplay {
     }
   }
 
-  createNumberDiv(fontSize, item, width, isTotalRow,isTotalColumn,index) {
+  createNumberDiv(fontSize, item, width, isTotalRow, isTotalColumn, index) {
     const span_number = this.createNumberSpan(fontSize, item);
     const div_number = document.createElement("div");
     div_number.classList.add("number");
     if (isTotalRow) {
       div_number.classList.add("sum");
-      div_number.onclick = () => this.handleNotChose( true,index);
-    } else if(isTotalColumn){
+      div_number.onclick = () => this.handleNotChose(true, index);
+    } else if (isTotalColumn) {
       div_number.classList.add("sum");
-      div_number.onclick = () => this.handleNotChose(false,index);
+      div_number.onclick = () => this.handleNotChose(false, index);
     } else {
       div_number.onclick = () => this.handleChose(div_number, item);
     }
     div_number.style.width = `${width}px`;
     div_number.style.height = `${width}px`;
     div_number.append(span_number);
-    if(!isTotalRow&&!isTotalColumn){
+    if (!isTotalRow && !isTotalColumn) {
       this.divNumbers.push(div_number);
       this.spanNumbers.push(span_number);
     } else {
-      this.spanTotalDivs.push(span_number)
+      this.spanTotalDivs.push(span_number);
     }
-    
+
     this.divNumberHasTotalDivs.push(div_number);
     this.spanNumberHasTotalDivs.push(span_number);
     return div_number;
@@ -423,35 +429,33 @@ export class RenderInGameDisplay {
     return span_number;
   }
 
-  handleNotChose(isTotalRow,index){
-    const field=isTotalRow?"x":"y";
+  handleNotChose(isTotalRow, index) {
+    const field = isTotalRow ? "x" : "y";
 
-    console.log('this.questNumbers: ',this.questNumbers)
-
-    const indexs=this.questNumbers.map(
-      (element,i) => {
-        if(element[field]===index){
-          return i
-        }
-      }
-    ).filter(i=>i!==undefined);
-    indexs.forEach(i=>{
-        if(!this.divNumbers[i].classList.contains("background-chose")){
-          this.spanNumbers[i].classList.add("color-not-chose")
+    const indexs = this.questNumbers
+      .map((element, i) => {
+        if (element[field] === index) {
+          return i;
         }
       })
-    
+      .filter((i) => i !== undefined);
+    indexs.forEach((i) => {
+      if (!this.divNumbers[i].classList.contains("background-chose")) {
+        this.spanNumbers[i].classList.add("color-not-chose");
+      }
+    });
   }
 
   handleChose(div_number, item) {
-    if (typeof item === "object") {   
+    if (typeof item === "object") {
       const index = this.questNumbers.findIndex(
         (element) => element.x === item.x && element.y === item.y
       );
-      const hasClassNotChoose=this.spanNumbers[index].classList.contains("color-not-chose")
-      if(hasClassNotChoose){    
-        this.spanNumbers[index].classList.remove("color-not-chose")
-      } else{
+      const hasClassNotChoose =
+        this.spanNumbers[index].classList.contains("color-not-chose");
+      if (hasClassNotChoose) {
+        this.spanNumbers[index].classList.remove("color-not-chose");
+      } else {
         const index = this.chosenNumbers.findIndex(
           (element) => element.x === item.x && element.y === item.y
         );
@@ -459,24 +463,32 @@ export class RenderInGameDisplay {
         if (index !== -1) {
           this.chosenNumbers.splice(index, 1);
         } else {
-          this.numberOfUndo+=1
-          this.undoCountDiv.innerText=this.numberOfUndo
+          this.numberOfUndo += 1;
+          this.undoCountDiv.innerText = this.numberOfUndo;
           this.chosenNumbers.push(item);
         }
         if (this.checkWin()) {
-          clearInterval(this.intervalId)
-         const time= this.finishGame();
-         console.log("time: ",time)
-         setTimeout(()=>{
-          this.body.removeChild(this.section);
-          const renderEndGameDisplay = new RenderEndGameDisplay({ numberOfSecond:this.numberOfSecond,numberOfUndo:this.numberOfUndo,numberOfClickPlus:this.numberOfClickPlus,numberOfClickPlusAll:this.numberOfClickPlusAll });
-          renderEndGameDisplay.execute();
-         },time*100+1000)
-          
+          clearInterval(this.intervalId);
+          const time = this.finishGame();
+          const timeOutId = this.moveToEndGameDisplay(time);
+          clearTimeout(timeOutId);
         }
       }
-     
     }
+  }
+
+  moveToEndGameDisplay(time) {
+    return setTimeout(() => {
+      this.body.removeChild(this.section);
+      const renderEndGameDisplay = new RenderEndGameDisplay({
+        numberOfSecond: this.numberOfSecond,
+        numberOfUndo: this.numberOfUndo,
+        numberOfClickPlus: this.numberOfClickPlus,
+        numberOfClickPlusAll: this.numberOfClickPlusAll,
+        rows: this.rows,
+      });
+      renderEndGameDisplay.execute();
+    }, time * 100 + 1000);
   }
 
   checkWin() {
@@ -494,12 +506,12 @@ export class RenderInGameDisplay {
       ++time;
       this.changeColorForDivNumber(i, time);
     }
-    return time
+    return time;
   }
 
   changeColorForDivNumber(index, time) {
     const { divClass, spanClass } = this.getClassForDivAndSpan(index);
-    
+
     setTimeout(() => {
       this.spanNumberHasTotalDivs[index].classList.add(spanClass);
       this.divNumberHasTotalDivs[index].classList.add(divClass);
@@ -512,7 +524,9 @@ export class RenderInGameDisplay {
         divClass: "win-background-sum",
         spanClass: "win-color-number-notChose",
       };
-    } else if (this.divNumberHasTotalDivs[index].classList.contains("background-chose")) {
+    } else if (
+      this.divNumberHasTotalDivs[index].classList.contains("background-chose")
+    ) {
       return {
         divClass: "win-background-number",
         spanClass: "win-color-number-chose",

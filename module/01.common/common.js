@@ -28,10 +28,21 @@ export const getRandomElementOfArray = (number, array, elements, max) => {
     (ele) => ele.y === array[index].y && ele.x === array[index].x
   );
 
-  if (sameRow === max - 1 || sameColumn === max - 1 || isDuplicated) {
+  if (
+    sameRow.length === max - 1 ||
+    sameColumn.length === max - 1 ||
+    isDuplicated
+  ) {
     return getRandomElementOfArray(number, array, elements, max);
   }
   elements.push(array[index]);
   array.splice(index, 1);
   return getRandomElementOfArray(number, array, elements, max);
+};
+
+export const getTimeMinuteSencond = (numberOfSecond) => {
+  const hour = Math.floor(numberOfSecond / 3600);
+  const minute = Math.floor((numberOfSecond - hour * 3600) / 60);
+  const second = numberOfSecond - hour * 3600 - minute * 60;
+  return { hour, second, minute };
 };

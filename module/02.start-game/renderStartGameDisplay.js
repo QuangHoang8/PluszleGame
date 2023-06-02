@@ -1,5 +1,5 @@
-import { RenderBackground } from "./renderBackground.js";
-import { RenderInGameDisplay } from "./renderInGameDisplay.js";
+import { RenderBackground } from "../01.common/renderBackground.js";
+import { RenderInGameDisplay } from "../03.in-game/renderInGameDisplay.js";
 
 class RenderStartGameDisplay {
   constructor() {
@@ -139,7 +139,6 @@ class RenderStartGameDisplay {
     body.removeChild(section);
     const renderInGameDisplay = new RenderInGameDisplay({ rows });
     renderInGameDisplay.execute();
-    console.log("row: ", rows);
   }
 }
 
