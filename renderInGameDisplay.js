@@ -4,17 +4,34 @@ import {
   getRandomElementOfArray,
   getOneNumberForEachRow,
 } from "./common.js";
+import {RenderEndGameDisplay} from './renderEndGameDisplay.js'
 export class RenderInGameDisplay {
   constructor({ rows }) {
     this.rows = rows;
     this.chosenNumbers = [];
+    this.questNumbers = [];
     this.answerNumbers = [];
     this.divNumbers = [];
+    this.divNumberHasTotalDivs = [];
     this.spanNumbers = [];
+    this.spanNumberHasTotalDivs = [];
+    this.spanTotalDivs = [];
+    this.numberOfUndo=0
+    this.numberOfClickPlus=0
+    this.numberOfClickPlusAll=0
+    this.undoCountDiv={}
+    this.numberOfSecond=0
+    this.timeDiv=[]
+    this.intervalId=0
+    this.body={}
+    this.section={}
+
   }
   execute() {
     const body = document.querySelector("body");
+    this.body=body
     const section = document.createElement("section");
+    this.section=section
     section.setAttribute("id", "in-game");
     const table = this.renderTable();
     const clockAndUndoSymbol = this.renderClockAndUndoSymbol();
@@ -33,9 +50,12 @@ export class RenderInGameDisplay {
     const script = document.querySelector("script");
     body.insertBefore(section, script);
     const questNumbers = this.createNumberForQuest();
+    this.questNumbers=questNumbers
+
     this.answerNumbers = this.creatNumberForAnswers([...questNumbers]);
     console.log("answerNumbers: ", this.answerNumbers);
     this.renderRow([...questNumbers]);
+    this.countTime()
   }
 
   renderTable() {
@@ -54,6 +74,19 @@ export class RenderInGameDisplay {
     parentDiv.append(undoSymbol);
 
     return parentDiv;
+  }
+
+  countTime(){   
+    this.intervalId=setInterval(()=>{
+      this.numberOfSecond+=1;
+      const time=Math.floor(this.numberOfSecond/3600)
+      const minute=Math.floor((this.numberOfSecond-time*3600)/60)
+      const second=this.numberOfSecond-time*3600-minute*60
+      this.timeDiv[0].innerText=time
+      this.timeDiv[1].innerText=minute.toString().padStart(2,'0')
+      this.timeDiv[2].innerText=second.toString().padStart(2,'0')
+    },1000)
+    console.log("this.intervalId: ",this.intervalId)
   }
 
   renderClock() {
@@ -78,10 +111,10 @@ export class RenderInGameDisplay {
     hourDiv.innerText = 0;
 
     const colonDiv1 = document.createElement("div");
-    colonDiv1.innerHTML = ":";
+    colonDiv1.innerText = ":";
 
     const colonDiv2 = document.createElement("div");
-    colonDiv2.innerHTML = ":";
+    colonDiv2.innerText = ":";
 
     const minuteDiv = document.createElement("div");
     minuteDiv.innerText = "00";
@@ -94,6 +127,8 @@ export class RenderInGameDisplay {
     countTimeDiv.append(minuteDiv);
     countTimeDiv.append(colonDiv2);
     countTimeDiv.append(secondDiv);
+
+    this.timeDiv.push(...[hourDiv,minuteDiv,secondDiv])
 
     timeDiv.append(countTimeDiv);
     return timeDiv;
@@ -114,6 +149,8 @@ export class RenderInGameDisplay {
 
     const undoCount = document.createElement("div");
     undoCount.classList.add("count-undo");
+    undoCount.innerText=this.numberOfUndo
+    this.undoCountDiv=undoCount
 
     undoDiv.append(undoImgDiv);
     undoDiv.append(undoCount);
@@ -128,6 +165,8 @@ export class RenderInGameDisplay {
     const supportTotalChosenDiv = document.createElement("div");
     supportTotalChosenDiv.classList.add("support");
     supportTotalChosenDiv.setAttribute("id", "plus");
+    supportTotalChosenDiv.onmousedown=()=>this.handlePlusChosenMouseDown()
+    supportTotalChosenDiv.onmouseup=()=>this.handleMouseUp()
 
     const supportTotalChosenImgDiv = document.createElement("img");
     supportTotalChosenImgDiv.classList.add("block-support");
@@ -139,6 +178,9 @@ export class RenderInGameDisplay {
     const supportTotalDiv = document.createElement("div");
     supportTotalDiv.classList.add("support");
     supportTotalDiv.setAttribute("id", "plusAll");
+    supportTotalDiv.onmousedown=()=>this.handlePlusAllMouseDown()
+    supportTotalDiv.onmouseup=()=>this.handleMouseUp()
+
 
     const supportTotalImgDiv = document.createElement("img");
     supportTotalImgDiv.classList.add("block-support");
@@ -150,6 +192,54 @@ export class RenderInGameDisplay {
     supportDiv.append(supportTotalChosenDiv);
     supportDiv.append(supportTotalDiv);
     return supportDiv;
+  }
+
+  handlePlusChosenMouseDown(){
+    this.numberOfClickPlus+=1
+    const totalColums = this.getTotalOfChosenNumberColumns();
+    const totalRows = this.getTotalOfChosenNumberRows();
+    this.fillNumberForTotalDiv(totalColums,totalRows)
+  }
+
+  getTotalOfChosenNumberColumns() {
+    return this.getTotalOfNumbers("y",false,true);
+  }
+
+  getTotalOfChosenNumberRows() {
+    return this.getTotalOfNumbers("x",false,true);
+  }
+
+  handlePlusAllMouseDown(){
+    this.numberOfClickPlusAll+=1
+    const totalColums = this.getTotalOfNumberColumns();
+    const totalRows = this.getTotalOfNumberRows();
+
+    this.fillNumberForTotalDiv(totalColums,totalRows)
+  }
+
+  getTotalOfNumberColumns() {
+    return this.getTotalOfNumbers("y");
+  }
+
+  getTotalOfNumberRows() {
+    return this.getTotalOfNumbers("x");
+  }
+
+  handleMouseUp(){
+    const totalColums = this.getTotalOfNumberColumnAnswers();
+    const totalRows = this.getTotalOfNumberRowAnswers();
+    this.fillNumberForTotalDiv(totalColums,totalRows)
+   
+  }
+
+  fillNumberForTotalDiv(totalColums,totalRows){
+    this.spanTotalDivs.forEach((item,index)=>{
+      if(index<this.rows){
+        item.innerText=totalRows[index]
+      } else {
+        item.innerText=totalColums[index-this.rows]
+      }      
+    })
   }
 
   renderSlideButton() {
@@ -171,8 +261,8 @@ export class RenderInGameDisplay {
     const table_number = document.querySelector(".table-number");
     const width = this.getWidthForNumberSpan();
     const fontSize = this.getFontSizeForNumberSpan();
-    const totalColums = this.getTotalOfNumberColumns();
-    const totalRows = this.getTotalOfNumberRows();
+    const totalColums = this.getTotalOfNumberColumnAnswers();
+    const totalRows = this.getTotalOfNumberRowAnswers();
 
     const row2 = document.createElement("div");
     row2.classList.add("flex", "row");
@@ -189,7 +279,7 @@ export class RenderInGameDisplay {
         row1.append(div_number);
       }
 
-      const div_sum = this.createNumberDiv(fontSize, totalRows[i], width, true);
+      const div_sum = this.createNumberDiv(fontSize, totalRows[i], width, true,false,i);
       row1.appendChild(div_sum);
       table_number.append(row1);
     }
@@ -200,11 +290,10 @@ export class RenderInGameDisplay {
         fontSize,
         totalColums[i],
         width,
-        true
+        false,true,i
       );
       row2.appendChild(div_sum);
     }
-    console.log("table_number", table_number);
     table_number.appendChild(row2);
   }
 
@@ -236,18 +325,20 @@ export class RenderInGameDisplay {
     return answerNumbers;
   }
 
-  getTotalOfNumberColumns() {
-    return this.getTotalOfNumbers("y");
+  getTotalOfNumberColumnAnswers() {
+    return this.getTotalOfNumbers("y",true);
   }
 
-  getTotalOfNumberRows() {
-    return this.getTotalOfNumbers("x");
+  getTotalOfNumberRowAnswers() {
+    return this.getTotalOfNumbers("x",true);
   }
 
-  getTotalOfNumbers(field) {
+  getTotalOfNumbers(field,isAnswer,isChosen) {
+    const dataSource=!!isAnswer?this.answerNumbers:!!isChosen?this.chosenNumbers:this.questNumbers
+    console.log("dataSource: ",dataSource)
     const totalOfNumbers = [];
     for (let i = 0; i < this.rows; i++) {
-      const numbers = this.answerNumbers.filter((item) => item[field] === i);
+      const numbers = dataSource.filter((item) => item[field] === i);
       const total = numbers.reduce((sum, item) => {
         return sum + item.value;
       }, 0);
@@ -296,20 +387,31 @@ export class RenderInGameDisplay {
     }
   }
 
-  createNumberDiv(fontSize, item, width, isTotal) {
+  createNumberDiv(fontSize, item, width, isTotalRow,isTotalColumn,index) {
     const span_number = this.createNumberSpan(fontSize, item);
     const div_number = document.createElement("div");
     div_number.classList.add("number");
-    if (isTotal) {
+    if (isTotalRow) {
       div_number.classList.add("sum");
+      div_number.onclick = () => this.handleNotChose( true,index);
+    } else if(isTotalColumn){
+      div_number.classList.add("sum");
+      div_number.onclick = () => this.handleNotChose(false,index);
     } else {
       div_number.onclick = () => this.handleChose(div_number, item);
     }
     div_number.style.width = `${width}px`;
     div_number.style.height = `${width}px`;
     div_number.append(span_number);
-    this.divNumbers.push(div_number);
-    this.spanNumbers.push(span_number);
+    if(!isTotalRow&&!isTotalColumn){
+      this.divNumbers.push(div_number);
+      this.spanNumbers.push(span_number);
+    } else {
+      this.spanTotalDivs.push(span_number)
+    }
+    
+    this.divNumberHasTotalDivs.push(div_number);
+    this.spanNumberHasTotalDivs.push(span_number);
     return div_number;
   }
 
@@ -321,22 +423,60 @@ export class RenderInGameDisplay {
     return span_number;
   }
 
+  handleNotChose(isTotalRow,index){
+    const field=isTotalRow?"x":"y";
+
+    console.log('this.questNumbers: ',this.questNumbers)
+
+    const indexs=this.questNumbers.map(
+      (element,i) => {
+        if(element[field]===index){
+          return i
+        }
+      }
+    ).filter(i=>i!==undefined);
+    indexs.forEach(i=>{
+        if(!this.divNumbers[i].classList.contains("background-chose")){
+          this.spanNumbers[i].classList.add("color-not-chose")
+        }
+      })
+    
+  }
+
   handleChose(div_number, item) {
-    if (typeof item === "object") {
-      const index = this.chosenNumbers.findIndex(
+    if (typeof item === "object") {   
+      const index = this.questNumbers.findIndex(
         (element) => element.x === item.x && element.y === item.y
       );
-      div_number.classList.toggle("background-chose");
-      if (index !== -1) {
-        this.chosenNumbers.splice(index, 1);
-      } else {
-        this.chosenNumbers.push(item);
+      const hasClassNotChoose=this.spanNumbers[index].classList.contains("color-not-chose")
+      if(hasClassNotChoose){    
+        this.spanNumbers[index].classList.remove("color-not-chose")
+      } else{
+        const index = this.chosenNumbers.findIndex(
+          (element) => element.x === item.x && element.y === item.y
+        );
+        div_number.classList.toggle("background-chose");
+        if (index !== -1) {
+          this.chosenNumbers.splice(index, 1);
+        } else {
+          this.numberOfUndo+=1
+          this.undoCountDiv.innerText=this.numberOfUndo
+          this.chosenNumbers.push(item);
+        }
+        if (this.checkWin()) {
+          clearInterval(this.intervalId)
+         const time= this.finishGame();
+         console.log("time: ",time)
+         setTimeout(()=>{
+          this.body.removeChild(this.section);
+          const renderEndGameDisplay = new RenderEndGameDisplay({ numberOfSecond:this.numberOfSecond,numberOfUndo:this.numberOfUndo,numberOfClickPlus:this.numberOfClickPlus,numberOfClickPlusAll:this.numberOfClickPlusAll });
+          renderEndGameDisplay.execute();
+         },time*100+1000)
+          
+        }
       }
-      if (this.checkWin()) {
-        this.finishGame();
-      }
+     
     }
-    console.log("chosenNumbers: ", this.chosenNumbers);
   }
 
   checkWin() {
@@ -350,27 +490,29 @@ export class RenderInGameDisplay {
 
   finishGame() {
     let time = 0;
-    for (let i = 0; i < this.divNumbers.length; i++) {
+    for (let i = 0; i < this.divNumberHasTotalDivs.length; i++) {
       ++time;
-      this.changeColorForDivNumber(index, time);
+      this.changeColorForDivNumber(i, time);
     }
+    return time
   }
 
   changeColorForDivNumber(index, time) {
     const { divClass, spanClass } = this.getClassForDivAndSpan(index);
+    
     setTimeout(() => {
-      this.spanNumbers[index].classList.add(spanClass);
-      this.divNumbers[index].classList.add(divClass);
+      this.spanNumberHasTotalDivs[index].classList.add(spanClass);
+      this.divNumberHasTotalDivs[index].classList.add(divClass);
     }, time * 100);
   }
 
   getClassForDivAndSpan(index) {
-    if (this.divNumbers[index].classList.contains("sum")) {
+    if (this.divNumberHasTotalDivs[index].classList.contains("sum")) {
       return {
         divClass: "win-background-sum",
         spanClass: "win-color-number-notChose",
       };
-    } else if (this.divNumbers[index].classList.contains("background-chose")) {
+    } else if (this.divNumberHasTotalDivs[index].classList.contains("background-chose")) {
       return {
         divClass: "win-background-number",
         spanClass: "win-color-number-chose",
